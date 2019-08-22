@@ -13,7 +13,6 @@ using namespace emscripten;
 #include "unicode/unistr.h"
 
 #include "unicode/numberformatter.h"
-#include "uprintf.h"
 
 class CurrencyFormatter {
 	private:

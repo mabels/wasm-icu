@@ -1,0 +1,4 @@
+node_modules/**
+**/*.tgz
+yarn-error.log
+package-lock.json

@@ -1,0 +1,30 @@
+{
+  "name": "wasm-intl",
+  "version": "1.0.0",
+  "description": "WASM ICU Intl JS Binding",
+  "main": "dist/WasmIntl.js",
+  "scripts": {
+    "clean": "rm -rf ./dist",
+    "build": "make && tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mabels/wasm-icu.git"
+  },
+  "keywords": [
+    "WASM",
+    "ICU"
+  ],
+  "author": "Meno Abels",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/mabels/wasm-icu/issues"
+  },
+  "homepage": "https://github.com/mabels/wasm-icu#readme",
+  "devDependencies": {
+    "wasm-libicu": "^64.2.0",
+    "@types/node": "^12.7.2",
+    "typescript": "^3.5.3"
+  }
+}
