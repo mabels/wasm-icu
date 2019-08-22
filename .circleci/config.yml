@@ -1,15 +1,8 @@
 #
 version: 2
 jobs:
-  build:
+  libicu:
     machine: true
-    # docker:
-      # specify the version you desire here
-      # - image: circleci/node:8.11
-      # - image: circleci/node:latest-browsers
-
-    # working_directory: ~/repo
-
     steps:
       - checkout
 
@@ -23,4 +16,27 @@ jobs:
           paths:
             - wasm-libicu
           key: wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
+
+   wasmintl:
+    machine: true
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - wasm-intl-{{ checksum "wasm-intl/package.json" }}
+
+      - run: cd wasm-intl && npm run build && npm run test && npm pack
+
+      - save_cache:
+          paths:
+            - wasm-intl
+          key: wasm-intl-{{ checksum "wasm-intl/package.json" }}
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - libicu
+      - wasmintl
 
