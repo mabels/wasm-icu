@@ -4,7 +4,7 @@
   "description": "WASM ICU Intl JS Binding",
   "main": "dist/WasmIntl.js",
   "scripts": {
-    "clean": "rm -rf ./dist",
+    "clean": "rm -rf ./dist ./node_modules",
     "build": "make && tsc",
     "test": "jest"
   },
