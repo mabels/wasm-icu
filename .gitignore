@@ -1,6 +1,8 @@
 # Prerequisites
 *.d
+node_modules/**
 icu/**
+dist/**
 
 # Compiled Object files
 *.slo

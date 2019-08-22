@@ -1,34 +1,29 @@
-
-const WasmIcu = require('./WasmIcu.js');
-
-let waitForReady = [];
-
-let Module = undefined;
-
-WasmIcu().then((module) => {
-	Module = module;
-	console.log('Ready');
-	waitForReady.forEach(p => p(module));
-	waitForReady = undefined;
+"use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var WasmIcu = __importStar(require("./WasmIcu"));
+var waitForReady = [];
+var wasmModule = undefined;
+WasmIcu().then(function (module) {
+    wasmModule = module;
+    waitForReady.forEach(function (p) { return p(module); });
+    waitForReady.splice(0, waitForReady.length);
 });
-
-module.exports = { 
-	ready: function() {
-		if (waitForReady) {
-			return new Promise(rs => waitForReady.push(rs));
-		}
-		return Promise.resolve();
-	},
-	CurrencyFormatter: function(locale, currency) {
-		if (Module) {
-			return Promise.resolve(new Module.CurrencyFormatter(locale, currency));
-		}
-		return new Promise(rs => {
-			console.log('Waiter');
-			waitForReady.push((module) => {
-			   console.log('Got ready');
-			   rs(new module.CurrencyFormatter(locale, currency))
-			});
-		});
-	}
-}
+module.exports = {
+    CurrencyFormatter: function (locale, currency) {
+        if (wasmModule) {
+            return Promise.resolve(new wasmModule.CurrencyFormatter(locale, currency));
+        }
+        return new Promise(function (rs) {
+            waitForReady.push(function (wasmModule) {
+                rs(new wasmModule.CurrencyFormatter(locale, currency));
+            });
+        });
+    }
+};

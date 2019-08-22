@@ -15,13 +15,12 @@ jobs:
 
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "branch.sh" }}
+            - wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
 
-      - run: bash -x prepare.sh 
+      - run: cd wasm-libicu && npm run build && npm pack
 
       - save_cache:
           paths:
-            - icu
-          key: v1-dependencies-{{ checksum "branch.sh" }}
+            - wasm-libicu
+          key: wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
 
-      - run: docker run --rm -v `pwd`:/src trzeci/emscripten bash -c "(cd icu/icu4c/source && bash -x ../../../build.sh)"
