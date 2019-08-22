@@ -36,7 +36,6 @@ class CurrencyFormatter {
 			}
 		}
 		~CurrencyFormatter() {
-			std::cout << "~CurrencyFormatter" << std::endl;
 			if (nf) {
 				delete nf;
 			}
