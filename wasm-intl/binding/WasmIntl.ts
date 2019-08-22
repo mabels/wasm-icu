@@ -1,7 +1,7 @@
 const WasmIntlBinding = require('../dist/WasmIntlBinding');
 
 
-declare type WaitForReadyFn = (m: any) => void; 
+type WaitForReadyFn = (m: any) => void; 
 
 const waitForReady: WaitForReadyFn[] = [];
 let wasmModule: any = undefined;
@@ -12,13 +12,13 @@ WasmIntlBinding().then((module: any) => {
 	waitForReady.splice(0, waitForReady.length)
 });
 
-declare class WasmCurrencyFormatter {
-	constructor(locale: string, currency: string);
-	public format(v:number): string;
-	public delete(): void;
+export interface WasmCurrencyFormatter {
+	new (locale: string, currency: string): WasmCurrencyFormatter;
+	format(v: number): string;
+	delete(): void;
 }
 
-export function CurrencyFormatter(locale: string, currency: string): Promise<WasmCurrencyFormatter> {
+export function createCurrencyFormatter(locale: string, currency: string): Promise<WasmCurrencyFormatter> {
 		if (wasmModule) {
 			return Promise.resolve(new wasmModule.CurrencyFormatter(locale, currency));
 		}
