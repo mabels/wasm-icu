@@ -1,12 +1,12 @@
 {
   "name": "wasm-intl",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "WASM ICU Intl JS Binding",
   "main": "dist/WasmIntl.js",
   "scripts": {
     "clean": "rm -rf ./dist",
     "build": "make && tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -26,5 +26,10 @@
     "wasm-libicu": "^64.2.0",
     "@types/node": "^12.7.2",
     "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "@types/jest": "^24.0.18",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.0.2"
   }
 }

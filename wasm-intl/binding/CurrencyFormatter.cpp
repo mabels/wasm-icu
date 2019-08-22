@@ -7,7 +7,7 @@ using namespace emscripten;
 #include <stdio.h>
 #include <string>
 #include <sstream>
-#include <iostream>
+// #include <iostream>
 
 #include "unicode/uvernum.h"
 #include "unicode/unistr.h"
@@ -27,16 +27,17 @@ class CurrencyFormatter {
 				    _locale.c_str(), u_errorName(errorCode));
 			    return;
 			}
-			UChar uCurrency[4];
-			u_charsToUChars(_currency.c_str(), uCurrency, 4);
-			nf->setCurrency(uCurrency, errorCode);
-			if(U_FAILURE(errorCode)) {
-				printf("setNumberFormatCurrency(%s) failed - %s\n",
-					_currency.c_str(), u_errorName(errorCode));
+			if (_currency.length() >= 3) {
+				UChar uCurrency[4];
+				u_charsToUChars(_currency.c_str(), uCurrency, 4);
+				nf->setCurrency(uCurrency, errorCode);
+				if(U_FAILURE(errorCode)) {
+					printf("setNumberFormatCurrency(%s) failed - %s\n",
+						_currency.c_str(), u_errorName(errorCode));
+				}
 			}
 		}
 		~CurrencyFormatter() {
-			std::cout << "~CurrencyFormatter" << std::endl;
 			if (nf) {
 				delete nf;
 			}
