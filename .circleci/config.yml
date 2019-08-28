@@ -1,7 +1,7 @@
 #
 version: 2
 jobs:
-  libicu:
+  wasm-icu:
     docker: 
       - image: circleci/node:dubnium
     steps:
@@ -19,57 +19,22 @@ jobs:
           paths:
             - emsdk
           key: emsdk
-
-      - run: source emsdk/emsdk_env.sh
 
       - restore_cache:
           keys:
             - wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
 
-      - run: cd wasm-libicu && npm run build && npm pack
-
+      - run: source emsdk/emsdk_env.sh && cd wasm-libicu && npm run build && npm pack
       - save_cache:
           paths:
             - wasm-libicu
           key: wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
 
-  wasmintl:
-    docker: 
-      - image: circleci/node:dubnium
-    steps:
-      - checkout
-
-      - restore_cache:
-          keys:
-            - emsdk
-
-      - run: git clone https://github.com/emscripten-core/emsdk.git
-
-      - run: cd emsdk && ./emsdk install latest && ./emsdk activate latest
-
-      - save_cache:
-          paths:
-            - emsdk
-          key: emsdk
-
-      - run: source emsdk/emsdk_env.sh
-
-
-      - restore_cache:
-          keys:
-            - wasm-intl-{{ checksum "wasm-intl/package.json" }}
-
-      - run: cd wasm-intl && npm install && npm run build && npm run test && npm pack
-
-      - save_cache:
-          paths:
-            - wasm-intl
-          key: wasm-intl-{{ checksum "wasm-intl/package.json" }}
+      - run: source emsdk/emsdk_env.sh && cd wasm-intl && npm install && npm run build && npm run test && npm pack
 
 workflows:
   version: 2
   build_and_test:
     jobs:
-      - libicu
-      - wasmintl
+      - wasm-icu
 
