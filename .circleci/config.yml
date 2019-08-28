@@ -2,7 +2,8 @@
 version: 2
 jobs:
   libicu:
-    machine: true
+    docker: 
+      - image: circleci/node:dubnium
     steps:
       - checkout
 
@@ -17,8 +18,9 @@ jobs:
             - wasm-libicu
           key: wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
 
-  wasmintl:
-    machine: true
+   wasmintl:
+    docker: 
+      - image: circleci/node:dubnium
     steps:
       - checkout
 
