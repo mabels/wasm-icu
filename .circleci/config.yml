@@ -17,7 +17,7 @@ jobs:
             - wasm-libicu
           key: wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
 
-   wasmintl:
+  wasmintl:
     machine: true
     steps:
       - checkout
