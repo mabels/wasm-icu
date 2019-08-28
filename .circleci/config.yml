@@ -26,7 +26,7 @@ jobs:
           keys:
             - wasm-intl-{{ checksum "wasm-intl/package.json" }}
 
-      - run: cd wasm-intl && npm run build && npm run test && npm pack
+      - run: cd wasm-intl && npm install && npm run build && npm run test && npm pack
 
       - save_cache:
           paths:
