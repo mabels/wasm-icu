@@ -9,20 +9,23 @@ jobs:
 
       - restore_cache:
           keys:
-            - emsdk
+            - emsdk-1
 
       - run:
           command: |
             if [ ! -d emsdk ]
             then
               git clone https://github.com/emscripten-core/emsdk.git
-              cd emsdk && ./emsdk install latest && ./emsdk activate latest
+              cd emsdk 
+              ./emsdk install latest 
+              ./emsdk activate latest
             fi
+            source ./emsdk_env.sh
 
       - save_cache:
           paths:
             - emsdk
-          key: emsdk
+          key: emsdk-1
 
       - restore_cache:
           keys:
