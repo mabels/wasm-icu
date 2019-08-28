@@ -11,9 +11,13 @@ jobs:
           keys:
             - emsdk
 
-      - run: git clone https://github.com/emscripten-core/emsdk.git
-
-      - run: cd emsdk && ./emsdk install latest && ./emsdk activate latest
+      - run:
+          command: |
+            if [ ! -d emsdk ]
+            then
+              git clone https://github.com/emscripten-core/emsdk.git
+              cd emsdk && ./emsdk install latest && ./emsdk activate latest
+            fi
 
       - save_cache:
           paths:
@@ -24,13 +28,30 @@ jobs:
           keys:
             - wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
 
-      - run: source emsdk/emsdk_env.sh && cd wasm-libicu && npm run build && npm pack
+      - run:
+          command: |
+            if [ ! -d wasm-libicu/dist ]
+            then
+              source emsdk/emsdk_env.sh
+              cd wasm-libicu
+              npm run build
+              npm pack
+            fi
+
       - save_cache:
           paths:
-            - wasm-libicu
+            - wasm-libicu/icu
+            - wasm-libicu/dist
           key: wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
 
-      - run: source emsdk/emsdk_env.sh && cd wasm-intl && npm install && npm run build && npm run test && npm pack
+      - run:
+          command:
+            source emsdk/emsdk_env.sh
+            cd wasm-intl
+            npm install
+            npm run build
+            npm run test
+            npm pack
 
 workflows:
   version: 2
