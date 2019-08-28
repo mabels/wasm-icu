@@ -43,7 +43,6 @@ jobs:
 
       - save_cache:
           paths:
-            - wasm-libicu/icu
             - wasm-libicu/dist
           key: wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
 
