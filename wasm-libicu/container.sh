@@ -2,7 +2,11 @@
 
 sh -x prepare.sh $BRANCH
 
-docker run --rm -v `pwd`:/src trzeci/emscripten \
- 	bash -c "(cd icu/icu4c/source && bash -x ../../../build.sh)"
+if [ "$EMSDK" = "" ]
+then
+  docker run --rm -v `pwd`:/src trzeci/emscripten \
+ 	  bash -c "(cd icu/icu4c/source && bash -x ../../../build.sh)"
+else
+  (cd icu/icu4c/source && bash -x ../../../build.sh)
+fi
 
-#cd icu/icu4c/source && bash -x ../../../build.sh

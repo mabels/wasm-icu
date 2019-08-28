@@ -9,6 +9,21 @@ jobs:
 
       - restore_cache:
           keys:
+            - emsdk
+
+      - run: git clone https://github.com/emscripten-core/emsdk.git
+
+      - run: cd emsdk && ./emsdk install latest && ./emsdk activate latest
+
+      - save_cache:
+          paths:
+            - emsdk
+          key: emsdk
+
+      - run: source emsdk/emsdk_env.sh
+
+      - restore_cache:
+          keys:
             - wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
 
       - run: cd wasm-libicu && npm run build && npm pack
@@ -23,6 +38,22 @@ jobs:
       - image: circleci/node:dubnium
     steps:
       - checkout
+
+      - restore_cache:
+          keys:
+            - emsdk
+
+      - run: git clone https://github.com/emscripten-core/emsdk.git
+
+      - run: cd emsdk && ./emsdk install latest && ./emsdk activate latest
+
+      - save_cache:
+          paths:
+            - emsdk
+          key: emsdk
+
+      - run: source emsdk/emsdk_env.sh
+
 
       - restore_cache:
           keys:
