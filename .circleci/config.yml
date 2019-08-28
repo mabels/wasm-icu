@@ -20,7 +20,7 @@ jobs:
               ./emsdk install latest 
               ./emsdk activate latest
             fi
-            source ./emsdk_env.sh
+            source ./emsdk/emsdk_env.sh
 
       - save_cache:
           paths:
