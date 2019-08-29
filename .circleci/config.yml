@@ -8,26 +8,26 @@ jobs:
     steps:
       - checkout
 
-      - restore_cache:
-          keys:
-            - emsdk-1
-
-      - run:
-          command: |
-            if [ ! -d emsdk ]
-            then
-              git clone https://github.com/emscripten-core/emsdk.git
-              cd emsdk 
-              ./emsdk install latest 
-              ./emsdk activate latest
-            fi
-            source ./emsdk/emsdk_env.sh
-
-      - save_cache:
-          paths:
-            - emsdk
-          key: emsdk-1
-
+#      - restore_cache:
+#          keys:
+#            - emsdk-1
+#
+#      - run:
+#          command: |
+#            if [ ! -d emsdk ]
+#            then
+#              git clone https://github.com/emscripten-core/emsdk.git
+#              cd emsdk 
+#              ./emsdk install latest 
+#              ./emsdk activate latest
+#            fi
+#            source ./emsdk/emsdk_env.sh
+#
+#      - save_cache:
+#          paths:
+#            - emsdk
+#          key: emsdk-1
+#
       - restore_cache:
           keys:
             - wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
