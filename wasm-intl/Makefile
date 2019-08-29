@@ -1,17 +1,23 @@
-ICU_BASE=./node_modules/wasm-libicu/dist
-
-ifeq (${EMSDK},) 
-	DOCKER_EMSDK=docker run --rm -v `pwd`:/src trzeci/emscripten
+ifneq ($(wildcard ../wasm-libicu/dist),)
+	ICU_BASE=../wasm-libicu/dist
 else
-	DOCKER_EMSDK=
+	ICU_BASE=./node_modules/wasm-libicu/dist
 endif
 
-all: ./dist ./dist/WasmIntlBinding.js
+#ifeq (${EMSDK},) 
+#	DOCKER_EMSDK=docker run --rm -v `pwd`:/src trzeci/emscripten
+#else
+DOCKER_EMSDK=
+#endif
 
-./dist:
-	mkdir -p ./dist
+TARGET_DIR = ./dist
 
-./dist/WasmIntlBinding.js: binding/CurrencyFormatter.cpp
+all: $(TARGET_DIR) $(TARGET_DIR)/WasmIntlBinding.js
+
+$(TARGET_DIR):
+	mkdir -p $(TARGET_DIR)
+
+$(TARGET_DIR)/WasmIntlBinding.js: binding/CurrencyFormatter.cpp
 	$(DOCKER_EMSDK) \
 	emcc -O3 --bind -std=c++11 \
 		-s MODULARIZE=1 -s 'EXPORT_NAME="WasmIntlBinding"' \
@@ -24,4 +30,4 @@ all: ./dist ./dist/WasmIntlBinding.js
 		-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
 
 clean:
-		rm -rf dist
+		rm -rf $(TARGET_DIR)

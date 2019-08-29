@@ -48,7 +48,7 @@ jobs:
           key: wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
 
       - run:
-          command:
+          command: |
             # source emsdk/emsdk_env.sh
             cd wasm-intl
             npm install
