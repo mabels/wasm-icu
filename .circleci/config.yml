@@ -3,7 +3,8 @@ version: 2
 jobs:
   wasm-icu:
     docker: 
-      - image: circleci/node:dubnium
+      # - image: circleci/node:dubnium
+      - image: trzeci/emscripten
     steps:
       - checkout
 
