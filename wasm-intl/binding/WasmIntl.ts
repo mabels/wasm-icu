@@ -2,25 +2,185 @@ const WasmIntlBinding = require("../dist/WasmIntlBinding");
 
 type WaitForReadyFn = () => void;
 
+type StyleValues = "decimal" | "currency" | "percent" | "unit";
+type LocaleValues = "lookup" | "best fit";
+type UnitDisplayValues = 'long' | 'short' | 'narrow';
+type CurrencyDisplayValues = 'symbol' | 'code' | 'name';
+type ZeroTo20 = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+                10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20;
+type OneTo21 =  1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 |
+                12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21;
+type NotationValues = "standard" | "scientific" | "engineering" | "compact";
+
+/*
+function styleDefault(val?: string, def = "decimal"): StyleValues {
+  return (["decimal", "currency", "percent", "unit"].find(i => i === val) ||
+    def) as StyleValues;
+}
+
+
+function localeMatcherDefault(val?: string, def = 'best fit'): LocaleValues {
+  return (["lookup", "best fit"].find(i => i === val) ||
+    def) as LocaleValues;
+}
+
+
+function unitDisplayDefault(val?: string, def = '') {
+  return (['long' , 'short' , 'narrow'].find(i => i === val) ||
+    def) as UnitDisplayValues;
+}
+function currencyDisplayDefault(val?: string, def = '') {
+  return (['symbol', 'code', 'name'].find(i => i === val) ||
+    def) as CurrencyDisplayValues;
+}
+
+function zeroTo20Default(val: number | undefined, def: number) {
+  return (typeof val === 'number' && 0 <= val && val <= 20 ? val : def) as ZeroTo20;
+}
+
+
+function oneTo21Default(val: number | undefined, def: number): OneTo21 {
+  return (typeof val === 'number' && 1 <= val && val <= 21 ? val : def) as OneTo21;
+}
+function notationDisplayDefault(val?: string, def = 'standard') {
+  return (["standard", "scientific", "engineering", "compact"].find(i => i === val) ||
+    def) as NotationValues;
+}
+*/
+
 export interface NumberFormatProps {
-  readonly style: "currency";
+  readonly style?: StyleValues;
   readonly currency?: string;
+  readonly localeMatcher?: LocaleValues;
+  readonly unitDisplay?: UnitDisplayValues;
+  readonly currencyDisplay?: CurrencyDisplayValues;
+  readonly useGrouping?: boolean;
+  readonly minimumIntegerDigits?: OneTo21;
+  readonly minimumFractionDigits?: ZeroTo20;
+  readonly maximumFractionDigits?: ZeroTo20;
+  readonly minimumSignificatDigits?: OneTo21;
+  readonly maximumSignificatDigits?: OneTo21;
+  readonly notation?: NotationValues;
+
+/*
+unitDisplay: "long"
+unitDisplay: "short"
+unitDisplay: "narrow"
+currencyDisplay: "symbol"
+currencyDisplay: "code"
+currencyDisplay: "name"
+useGrouping: boolean || true
+minimumIntegerDigits: 1-21 || 1
+minimumFractionDigits: 0-20 || 0
+maximumFractionDigits: 0-20 || 0
+minimumSignificantDigits: 1-21 || 1
+maximumSignificantDigits: 1-21 || 21
+notation: "standard"
+notation: "scientific"
+notation: "engineering"
+notation: "compact"
+*/
 }
 
 function currencyToString(currency?: string): string {
   return typeof currency == "string" ? currency : "-";
 }
 
+// interface NumberFormatCtxProps {
+//   readonly currency?: string;
+//   readonly style: StyleValues;
+//   readonly localeMatcher: LocaleValues;
+//   readonly unitDisplay: UnitDisplayValues;
+//   readonly currencyDisplay: CurrencyDisplayValues;
+//   readonly useGrouping: boolean;
+//   readonly minimumIntegerDigits: OneTo21;
+//   readonly minimumFractionDigits: ZeroTo20;
+//   readonly maximumFractionDigits: ZeroTo20;
+//   readonly minimumSignificatDigits: OneTo21;
+//   readonly maximumSignificatDigits: OneTo21;
+//   readonly notation: NotationValues;
+// }
+
+function toFormatterOptionBuilder(builder: any, props: NumberFormatProps) {
+  if (props.style) {
+    builder.style(props.style)
+  }
+  if (props.currency) {
+    builder.currency(props.currency)
+  }
+  if (props.unitDisplay) {
+    builder.unitDisplay(props.unitDisplay)
+  }
+  if (props.currencyDisplay) {
+    builder.currencyDisplay(props.currencyDisplay)
+  }
+  if (props.useGrouping) {
+    builder.useGrouping(!!props.useGrouping)
+  }
+  if (typeof props.minimumIntegerDigits === 'number') {
+    builder.minimumIntegerDigits(props.minimumIntegerDigits)
+  }
+  if (typeof props.minimumFractionDigits === 'number') {
+    builder.minimumFractionDigits(props.minimumFractionDigits)
+  }
+  if (typeof props.maximumFractionDigits === 'number') {
+    builder.maximumFractionDigits(props.maximumFractionDigits)
+  }
+  if (typeof props.minimumSignificatDigits === 'number') {
+    builder.minimumSignificatDigits(props.minimumSignificatDigits)
+  }
+  if (typeof props.maximumSignificatDigits === 'number') {
+    builder.maximumSignificatDigits(props.maximumSignificatDigits)
+  }
+  if (props.notation) {
+    builder.notation(props.notation)
+  }
+  return builder;
+}
+
+
 export class NumberFormatCtx {
   private readonly wasmFormatter: any;
-  constructor(ctx: WasmIntlCtx, locale: string, currency?: string) {
-    this.wasmFormatter = new ctx.wasmModule.CurrencyFormatter(
-      locale,
-      currencyToString(currency)
-    );
+  // private readonly wasmFormatterOptionBuilder: any;
+  constructor(ctx: WasmIntlCtx, locale: string, props: NumberFormatProps) {
+    const builder = new ctx.wasmModule.FormatterOptionBuilder();
+    toFormatterOptionBuilder(builder, props);
+    // console.log('xxxxx', this.wasmFormatterOptionBuilder.build().getMaximumFractionDigits(),
+    //                      this.wasmFormatterOptionBuilder.build().getMinimumFractionDigits());
+    switch (props.style) {
+      case "currency":
+        this.wasmFormatter = new ctx.wasmModule.CurrencyFormatter(
+          locale,
+          builder.build()
+        );
+        break;
+      case "decimal":
+        throw Error("decimal is not implemented");
+        this.wasmFormatter = new ctx.wasmModule.DecimalFormatter(
+          locale,
+          builder.build()
+        );
+        break;
+      case "percent":
+        throw Error("percent is not implemented");
+        this.wasmFormatter = new ctx.wasmModule.PercentFormatter(
+          locale,
+          builder.build()
+        );
+        break;
+      case "unit":
+        throw Error("unit is not implemented");
+        this.wasmFormatter = new ctx.wasmModule.UnitFormatter(
+          locale,
+          builder.build()
+        );
+        break;
+    }
+    builder.delete();
   }
   public delete() {
     this.wasmFormatter.delete();
+    // this.wasmFormatterOptionBuilder.delete();
   }
   public format(val: number): string {
     return this.wasmFormatter.format(val);
@@ -31,15 +191,26 @@ export class WasmIntlCtx {
   public wasmModule: any;
   public NumberFormat(
     locale: string,
-    props: NumberFormatProps
+    props?: NumberFormatProps
   ): NumberFormatCtx {
-    if (props && props.style === "currency") {
-      return new NumberFormatCtx(this, locale, props.currency);
-    }
-    throw Error(
-      `NumberFormat for style[${(props || {}).style}] not implemented`
-    );
+    return new NumberFormatCtx(this, locale, props || {});
+    /*
+      {
+      style: styleDefault(props && props.style),
+      localeMatcher: localeMatcherDefault(props && props.localeMatcher),
+      unitDisplay: unitDisplayDefault(props && props.unitDisplay),
+      currencyDisplay: currencyDisplayDefault(props && props.currencyDisplay),
+      useGrouping: props && typeof props.useGrouping === 'boolean' ? props.useGrouping : true,
+      minimumIntegerDigits: oneTo21Default(props && props.minimumIntegerDigits, 1),
+      minimumFractionDigits: zeroTo20Default(props && props.maximumFractionDigits, 0),
+      maximumFractionDigits: zeroTo20Default(props && props.minimumFractionDigits, 0),
+      minimumSignificatDigits: oneTo21Default(props && props.minimumSignificatDigits, 1),
+      maximumSignificatDigits: oneTo21Default(props && props.maximumSignificatDigits, 21),
+      notation: notationDisplayDefault(props && props.notation)
+    });
+    */
   }
+
   public get isReady() {
     return !!this.wasmModule;
   }

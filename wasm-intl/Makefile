@@ -4,7 +4,7 @@ else
 	ICU_BASE=./node_modules/wasm-libicu/dist
 endif
 
-#ifeq (${EMSDK},) 
+#ifeq (${EMSDK},)
 #	DOCKER_EMSDK=docker run --rm -v `pwd`:/src trzeci/emscripten
 #else
 DOCKER_EMSDK=
@@ -17,11 +17,14 @@ all: $(TARGET_DIR) $(TARGET_DIR)/WasmIntlBinding.js
 $(TARGET_DIR):
 	mkdir -p $(TARGET_DIR)
 
-$(TARGET_DIR)/WasmIntlBinding.js: binding/CurrencyFormatter.cpp
+$(TARGET_DIR)/WasmIntlBinding.js: binding/main.cpp \
+	binding/currency-formatter.h \
+	binding/formatter-options.h \
+	binding/str2int.h
 	$(DOCKER_EMSDK) \
 	emcc -O3 --bind -std=c++11 \
 		-s MODULARIZE=1 -s 'EXPORT_NAME="WasmIntlBinding"' \
-		-s TOTAL_MEMORY=32MB -s WASM=1 -s FORCE_FILESYSTEM=1 -s NODERAWFS=1 \
+		-s TOTAL_MEMORY=32MB -s WASM=1 \
 		-I $(ICU_BASE)/include \
 		$< \
 		-o $@ \

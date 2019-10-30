@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/mabels/wasm-icu#readme",
   "devDependencies": {
-    "wasm-libicu": "^64.2.0",
+    "wasm-libicu": "^65.1.0",
     "@types/node": "^12.7.2",
     "typescript": "^3.5.3"
   },
