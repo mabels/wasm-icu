@@ -1,6 +1,6 @@
 {
   "name": "wasm-libicu",
-  "version": "64.2.0",
+  "version": "65.1.0",
   "description": "libicu emscripten compiled",
   "scripts": {
     "build": "sh -x container.sh",
