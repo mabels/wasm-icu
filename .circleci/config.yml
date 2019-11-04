@@ -44,7 +44,7 @@ jobs:
             if [ ! -d wasm-protobuf/dist ]
             then
               apt update -y
-              apt install -y autoconf
+              apt install -y autoconf libtool
               cd wasm-protobuf
               npm run build
               npm pack
