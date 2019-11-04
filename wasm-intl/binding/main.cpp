@@ -11,7 +11,7 @@ using namespace emscripten;
 EMSCRIPTEN_BINDINGS(intl)
 {
 	class_<CurrencyFormatter>("CurrencyFormatter")
-			.constructor<int, const char *>()
+			.constructor(&CurrencyFormatter::create, allow_raw_pointers())
 			.function("format", &CurrencyFormatter::format)
 			.property("errorCode", &CurrencyFormatter::getErrorCode)
 			.property("errorName", &CurrencyFormatter::getErrorName);

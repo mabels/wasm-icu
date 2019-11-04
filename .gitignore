@@ -1,8 +1,9 @@
 # Prerequisites
 *.d
 node_modules/**
-icu/**
-dist/**
+**/icu/**
+**/protobuf/**
+**/dist/**
 
 # Compiled Object files
 *.slo

@@ -90,12 +90,16 @@
 			*/
 #endif
 
+
 class CurrencyFormatter
 {
 private:
 	UErrorCode errorCode = U_ZERO_ERROR;
 	ICUNS::NumberFormat *nf = 0;
 public:
+	static CurrencyFormatter* create(int len, int ptr) {
+		return new CurrencyFormatter(len, (const char *)ptr);
+	}
 
 	CurrencyFormatter(int len, const char *protobuf)
 	{

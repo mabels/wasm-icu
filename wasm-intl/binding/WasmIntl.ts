@@ -51,7 +51,6 @@ function notationDisplayDefault(val?: string, def = 'standard') {
 */
 
 export interface NumberFormatProps {
-  readonly locale: string;
   readonly style?: StyleValues;
   readonly currency?: string;
   readonly localeMatcher?: LocaleValues;
@@ -104,9 +103,9 @@ function currencyToString(currency?: string): string {
 //   readonly notation: NotationValues;
 // }
 
-function toFormatterOptions(props: NumberFormatProps) {
+function toFormatterOptions(locale: string, props: NumberFormatProps) {
   const builder = new FormatterOptions();
-  builder.setLocale(props.locale);
+  builder.setLocale(locale);
   if (props.style) {
     builder.setStyle(props.style)
   }
@@ -144,17 +143,27 @@ function toFormatterOptions(props: NumberFormatProps) {
 }
 
 
+function arrayToWasm(ctx: WasmIntlCtx, typedArray: Uint8Array) {
+  var numBytes = typedArray.length * typedArray.BYTES_PER_ELEMENT;
+  var ptr = ctx.wasmModule._malloc(numBytes);
+  var heapBytes = new Uint8Array(ctx.wasmModule.HEAPU8.buffer, ptr, numBytes);
+  heapBytes.set(new Uint8Array(typedArray.buffer));
+  return heapBytes;
+}
+
 export class NumberFormatCtx {
   private readonly wasmFormatter: any;
   // private readonly wasmFormatterOptionBuilder: any;
   constructor(ctx: WasmIntlCtx, locale: string, props: NumberFormatProps) {
-    const pb = toFormatterOptions(props);
+    const pb = toFormatterOptions(locale, props);
     // console.log('xxxxx', this.wasmFormatterOptionBuilder.build().getMaximumFractionDigits(),
     //                      this.wasmFormatterOptionBuilder.build().getMinimumFractionDigits());
+
+    const heapBytes = arrayToWasm(ctx, pb);
     switch (props.style) {
       case "currency":
         this.wasmFormatter = new ctx.wasmModule.CurrencyFormatter(
-          pb.length, pb
+          pb.length, heapBytes.byteOffset
         );
         break;
       case "decimal":
@@ -176,6 +185,7 @@ export class NumberFormatCtx {
         );
         break;
     }
+    ctx.wasmModule._free(heapBytes.byteOffset);
   }
   public delete() {
     this.wasmFormatter.delete();
@@ -188,6 +198,7 @@ export class NumberFormatCtx {
 
 export class WasmIntlCtx {
   public wasmModule: any;
+
   public NumberFormat(
     locale: string,
     props?: NumberFormatProps

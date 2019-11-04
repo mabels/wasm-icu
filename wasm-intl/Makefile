@@ -10,7 +10,7 @@ else
 	PROTOBUF_BASE=./node_modules/wasm-protobuf/dist
 endif
 
-PROTOC=/Users/menabe/Software/protobuf/src/protoc
+PROTOC=$(PWD)/generated/protobuf/dist/bin/protoc
 
 
 #ifeq (${EMSDK},)
@@ -21,7 +21,10 @@ DOCKER_EMSDK=
 
 TARGET_DIR = ./dist
 
-all: $(TARGET_DIR) generated $(TARGET_DIR)/WasmIntlBinding.js
+all: $(TARGET_DIR) generated $(PROTOC) $(TARGET_DIR)/WasmIntlBinding.js
+
+$(PROTOC): native-protobuf.sh ../wasm-protobuf/branch.sh ../wasm-protobuf/prepare.sh
+	sh -x native-protobuf.sh
 
 $(TARGET_DIR):
 	mkdir -p $(TARGET_DIR)
@@ -39,11 +42,12 @@ $(TARGET_DIR)/WasmIntlBinding.js: binding/main.cpp \
 	emcc -O3 --bind -std=c++11 \
 	  -DICUNS=icu_65 \
 		-s MODULARIZE=1 -s 'EXPORT_NAME="WasmIntlBinding"' \
-		-s TOTAL_MEMORY=32MB -s WASM=1 \
+		-s TOTAL_MEMORY=40MB -s WASM=1 \
 		-I ./generated \
 		-I $(ICU_BASE)/include \
 		-I $(PROTOBUF_BASE)/include \
-		$< \
+		generated/formatter-options.pb.o \
+		binding/main.cpp \
 		-o $@ \
 		-L $(ICU_BASE)/lib -licui18n -licuio -licutu -licuuc -licudata \
 		-L $(PROTOBUF_BASE)/lib -lprotobuf-lite \

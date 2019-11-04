@@ -1,5 +1,5 @@
 #
-. ./branch.sh
+#. ./branch.sh
 
 PROTOBUF_DIR=./protobuf
 

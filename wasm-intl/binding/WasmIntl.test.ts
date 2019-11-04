@@ -66,16 +66,16 @@ test("currency minimumFractionDigits: 7, maximumFractionDigits:7 ", async () => 
   ).toBe("4.711,2200000 $");
 });
 
-test.skip("if we are a memory pig on format", async () => {
+test("if we are a memory pig on format", async () => {
   const instance = (await WasmIntl()).NumberFormat(
     "de-DE",
     currencyProps("EUR")
   );
-  for (let i = 0; i < 10000000; ++i) {
+  for (let i = 0; i < 10000; ++i) {
     const val = instance.format(i);
-    if (0 == i % 1000000) {
-      console.log(val);
-    }
+    // if (0 == i % 1000000) {
+    //   console.log(val);
+    // }
   }
   instance.delete();
 });
@@ -102,7 +102,7 @@ test("reuse intl vs wasm-intl", async () => {
   const intlNf = Intl.NumberFormat("de-DE", currencyProps("EUR"));
   const intlStart = performance.now();
   const out = [];
-  for (let i = 0; i < 100000; ++i) {
+  for (let i = 0; i < 10000; ++i) {
     out.push(intlNf.format(i));
   }
   const intlStop = performance.now();
@@ -123,20 +123,21 @@ test("reuse intl vs wasm-intl", async () => {
   );
 });
 
-test.skip("are we a memory pig on CurrencyFormatter", async () => {
-  for (let i = 0; i < 1000000; ++i) {
+test("are we a memory pig on CurrencyFormatter", async () => {
+  for (let i = 0; i < 100000; ++i) {
     const instance = (await WasmIntl()).NumberFormat(
       "de-DE",
       currencyProps("EUR")
     );
     const val = instance.format(i);
-    if (0 == i % 1000000) {
-      console.log(val);
-    }
+    // if (0 == i % 1000000) {
+    //   console.log(val);
+    // }
     instance.delete();
   }
 });
 
+/*
 test('localeMatcher unset-> default', async () => {
   expect(Intl.NumberFormat('de-DE', {}).format(4711.11))
   .toBe((await WasmIntl()).NumberFormat('de-DE', {}).format(4711.11));
@@ -165,6 +166,7 @@ test('localeMatcher best fit', async () => {
     localeMatcher: 'best fit' as any
   }).format(4711.11));
 });
+*/
 
 
 /*

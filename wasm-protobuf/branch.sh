@@ -1,2 +1,3 @@
 BRANCH=v3.10.1
+export BRANCH
 echo $BRANCH
