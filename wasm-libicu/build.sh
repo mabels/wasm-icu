@@ -4,6 +4,7 @@
 #emconfigure ./configure --enable-static --prefix=/src/dist
 #sed -i.orig 's/^EXEEXT =/EXEEXT = .js/' icudefs.mk
 if [ -d /src ]
+then 
   PREFIX=/src/dist
 else
   PREFIX=$PWD/dist
