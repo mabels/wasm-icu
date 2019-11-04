@@ -12,6 +12,6 @@ fi
 mkdir -p $PREFIX
 sh autogen.sh
 emconfigure ./configure --prefix=$PWD/../dist --disable-shared --enable-static
-make clean
-make -j$(nproc) EXEEXT=.js
-make -j$(nproc) install
+emmake make clean
+emmake make -j$(nproc) EXEEXT=.js
+emmake make -j$(nproc) install
