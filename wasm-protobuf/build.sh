@@ -9,7 +9,8 @@ else
   PREFIX=$PWD/dist
 fi
 mkdir -p $PREFIX
-./runConfigureICU wasm32 --prefix=$PREFIX
+sh autogen.sh
+emconfigure ./configure --prefix=$PWD/../dist --disable-shared --enable-static
 make clean
-make -j$(nproc)
+make -j$(nproc) EXEEXT=.js
 make -j$(nproc) install

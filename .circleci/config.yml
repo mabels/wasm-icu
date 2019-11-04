@@ -50,6 +50,25 @@ jobs:
             - wasm-libicu/dist
           key: wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
 
+      - restore_cache:
+          keys:
+            - wasm-protobuf-{{ checksum "wasm-protobuf/branch.sh" }}
+
+      - run:
+          command: |
+            if [ ! -d wasm-protobuf/dist ]
+            then
+            #  source emsdk/emsdk_env.sh
+              cd wasm-protobuf
+              npm run build
+              npm pack
+            fi
+
+      - save_cache:
+          paths:
+            - wasm-protobuf/dist
+          key: wasm-protobuf-{{ checksum "wasm-protobuf/branch.sh" }}
+
       - run:
           command: |
             # source emsdk/emsdk_env.sh

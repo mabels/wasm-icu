@@ -1,5 +1,7 @@
 syntax = "proto2";
 
+option cc_enable_arenas = false;
+
 package wasmIntl;
 
 message FormatterOptions {
