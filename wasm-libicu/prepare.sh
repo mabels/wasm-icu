@@ -14,6 +14,6 @@ then
 else
 	git clone $GIT_REPO $ICU_DIR
 fi
-(cd $ICU_DIR && git co -b $BRANCH $BRANCH)
+(cd $ICU_DIR && git checkout -b $BRANCH $BRANCH)
 (cd $ICU_DIR && git diff -p wasm32-start..remotes/origin/wasm32 | patch -p1)
 
