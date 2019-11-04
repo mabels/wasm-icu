@@ -7,7 +7,7 @@ if [ -d /src ]
 then
   PREFIX=/src/dist
 else
-  PREFIX=$PWD/dist
+  PREFIX=$PWD/../dist
 fi
 mkdir -p $PREFIX
 sh autogen.sh

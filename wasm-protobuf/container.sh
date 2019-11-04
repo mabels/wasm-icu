@@ -2,8 +2,7 @@
 
 sh -x prepare.sh $BRANCH
 
-buildCmd="cd icu/icu4c/source && bash -x ../../../build.sh"
-buildCmd="echo 'TODO'"
+buildCmd="cd protobuf && bash -x ../build.sh"
 
 if `which emcc`
 then
