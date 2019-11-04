@@ -86,8 +86,8 @@ workflows:
       - wasm-libicu
       - wasm-protobuf
       - wasm-intl:
-        requires:
-          - wasm-libicu
-          - wasm-protobuf
+          requires:
+            - wasm-libicu
+            - wasm-protobuf
 
 
