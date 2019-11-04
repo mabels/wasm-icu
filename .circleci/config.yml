@@ -1,36 +1,13 @@
 #
 version: 2
 jobs:
-  wasm-icu:
+  wasm-libicu:
     docker: 
-      # - image: circleci/node:dubnium
       - image: trzeci/emscripten
-    steps:
-      #      - setup_remote_docker: 
-      #  docker_layer_caching: true
 
+    steps:
       - checkout
 
-#      - restore_cache:
-#          keys:
-#            - emsdk-1
-#
-#      - run:
-#          command: |
-#            if [ ! -d emsdk ]
-#            then
-#              git clone https://github.com/emscripten-core/emsdk.git
-#              cd emsdk 
-#              ./emsdk install latest 
-#              ./emsdk activate latest
-#            fi
-#            source ./emsdk/emsdk_env.sh
-#
-#      - save_cache:
-#          paths:
-#            - emsdk
-#          key: emsdk-1
-#
       - restore_cache:
           keys:
             - wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
@@ -49,6 +26,14 @@ jobs:
           paths:
             - wasm-libicu/dist
           key: wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
+
+
+  wasm-protobuf:
+    docker: 
+      - image: trzeci/emscripten
+
+    steps:
+      - checkout
 
       - restore_cache:
           keys:
@@ -69,6 +54,22 @@ jobs:
             - wasm-protobuf/dist
           key: wasm-protobuf-{{ checksum "wasm-protobuf/branch.sh" }}
 
+
+  wasm-intl:
+    docker: 
+      - image: trzeci/emscripten
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
+
+      - restore_cache:
+          keys:
+            - wasm-protobuf-{{ checksum "wasm-protobuf/branch.sh" }}
+
       - run:
           command: |
             # source emsdk/emsdk_env.sh
@@ -82,5 +83,11 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - wasm-icu
+      - wasm-libicu
+      - wasm-protobuf
+      - wasm-intl:
+        required:
+          - wasm-libicu
+          - wasm-protobuf
+
 
