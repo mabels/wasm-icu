@@ -43,8 +43,8 @@ jobs:
           command: |
             if [ ! -d wasm-protobuf/dist ]
             then
-              apt update
-              apt install autoconf
+              apt update -y
+              apt install -y autoconf
               cd wasm-protobuf
               npm run build
               npm pack
