@@ -1,0 +1,20 @@
+syntax = "proto2";
+
+package wasmIntl;
+
+message FormatterOptions {
+  required string locale = 1;
+	optional string style = 2;
+	optional string unitDisplay = 3;
+	optional string currency = 4;
+	optional string currencyDisplay = 5;
+	optional string compactDisplay = 6;
+  optional string notation = 7;
+  optional bool useGrouping = 8;
+	optional int32 minimumIntegerDigits = 9;
+	optional int32 minimumFractionDigits = 10;
+	optional int32 maximumFractionDigits = 11;
+	optional int32 minimumSignificantDigits = 12;
+	optional int32 maximumSignificantDigits = 13;
+}
+

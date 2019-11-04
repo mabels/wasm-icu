@@ -1,4 +1,6 @@
+import { FormatterOptions } from '../generated/formatter-options_pb';
 const WasmIntlBinding = require("../dist/WasmIntlBinding");
+
 
 type WaitForReadyFn = () => void;
 
@@ -49,6 +51,7 @@ function notationDisplayDefault(val?: string, def = 'standard') {
 */
 
 export interface NumberFormatProps {
+  readonly locale: string;
   readonly style?: StyleValues;
   readonly currency?: string;
   readonly localeMatcher?: LocaleValues;
@@ -101,41 +104,43 @@ function currencyToString(currency?: string): string {
 //   readonly notation: NotationValues;
 // }
 
-function toFormatterOptionBuilder(builder: any, props: NumberFormatProps) {
+function toFormatterOptions(props: NumberFormatProps) {
+  const builder = new FormatterOptions();
+  builder.setLocale(props.locale);
   if (props.style) {
-    builder.style(props.style)
+    builder.setStyle(props.style)
   }
   if (props.currency) {
-    builder.currency(props.currency)
+    builder.setCurrency(props.currency)
   }
   if (props.unitDisplay) {
-    builder.unitDisplay(props.unitDisplay)
+    builder.setUnitdisplay(props.unitDisplay)
   }
   if (props.currencyDisplay) {
-    builder.currencyDisplay(props.currencyDisplay)
+    builder.setCurrencydisplay(props.currencyDisplay)
   }
   if (props.useGrouping) {
-    builder.useGrouping(!!props.useGrouping)
+    builder.setUsegrouping(!!props.useGrouping)
   }
   if (typeof props.minimumIntegerDigits === 'number') {
-    builder.minimumIntegerDigits(props.minimumIntegerDigits)
+    builder.setMinimumintegerdigits(props.minimumIntegerDigits)
   }
   if (typeof props.minimumFractionDigits === 'number') {
-    builder.minimumFractionDigits(props.minimumFractionDigits)
+    builder.setMinimumfractiondigits(props.minimumFractionDigits)
   }
   if (typeof props.maximumFractionDigits === 'number') {
-    builder.maximumFractionDigits(props.maximumFractionDigits)
+    builder.setMaximumfractiondigits(props.maximumFractionDigits)
   }
   if (typeof props.minimumSignificatDigits === 'number') {
-    builder.minimumSignificatDigits(props.minimumSignificatDigits)
+    builder.setMinimumsignificantdigits(props.minimumSignificatDigits)
   }
   if (typeof props.maximumSignificatDigits === 'number') {
-    builder.maximumSignificatDigits(props.maximumSignificatDigits)
+    builder.setMaximumsignificantdigits(props.maximumSignificatDigits)
   }
   if (props.notation) {
-    builder.notation(props.notation)
+    builder.setNotation(props.notation)
   }
-  return builder;
+  return builder.serializeBinary();
 }
 
 
@@ -143,40 +148,34 @@ export class NumberFormatCtx {
   private readonly wasmFormatter: any;
   // private readonly wasmFormatterOptionBuilder: any;
   constructor(ctx: WasmIntlCtx, locale: string, props: NumberFormatProps) {
-    const builder = new ctx.wasmModule.FormatterOptionBuilder();
-    toFormatterOptionBuilder(builder, props);
+    const pb = toFormatterOptions(props);
     // console.log('xxxxx', this.wasmFormatterOptionBuilder.build().getMaximumFractionDigits(),
     //                      this.wasmFormatterOptionBuilder.build().getMinimumFractionDigits());
     switch (props.style) {
       case "currency":
         this.wasmFormatter = new ctx.wasmModule.CurrencyFormatter(
-          locale,
-          builder.build()
+          pb.length, pb
         );
         break;
       case "decimal":
         throw Error("decimal is not implemented");
         this.wasmFormatter = new ctx.wasmModule.DecimalFormatter(
-          locale,
-          builder.build()
+          pb.length, pb
         );
         break;
       case "percent":
         throw Error("percent is not implemented");
         this.wasmFormatter = new ctx.wasmModule.PercentFormatter(
-          locale,
-          builder.build()
+          pb.length, pb
         );
         break;
       case "unit":
         throw Error("unit is not implemented");
         this.wasmFormatter = new ctx.wasmModule.UnitFormatter(
-          locale,
-          builder.build()
+          pb.length, pb
         );
         break;
     }
-    builder.delete();
   }
   public delete() {
     this.wasmFormatter.delete();

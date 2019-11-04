@@ -6,18 +6,17 @@ using namespace emscripten;
 
 #include "unicode/uvernum.h"
 
-#include "formatter-options.h"
 #include "currency-formatter.h"
 
 EMSCRIPTEN_BINDINGS(intl)
 {
 	class_<CurrencyFormatter>("CurrencyFormatter")
-			.constructor()
-			.fu
+			.constructor<int, const char *>()
 			.function("format", &CurrencyFormatter::format)
 			.property("errorCode", &CurrencyFormatter::getErrorCode)
 			.property("errorName", &CurrencyFormatter::getErrorName);
 
+/*
 	class_<FormatterOptionBuilder>("FormatterOptionBuilder")
 		.constructor()
 		// .function("build", &FormatterOptionBuilder::build)
@@ -41,6 +40,7 @@ EMSCRIPTEN_BINDINGS(intl)
     .property("currency", &FormatterOptions::currency)
     .function("getMinimumFractionDigits", &FormatterOptions::getMinimumFractionDigits)
     .function("getMaximumFractionDigits", &FormatterOptions::getMaximumFractionDigits);
+		*/
 }
 
 extern "C"

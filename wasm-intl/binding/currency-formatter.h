@@ -8,9 +8,8 @@
 #include "unicode/unistr.h"
 #include "unicode/numberformatter.h"
 
-#include "formatter-options.h"
+#include "formatter-options.pb.h"
 #include "str2int.h"
-
 
 
 #ifndef SWITCHOFF
@@ -95,44 +94,49 @@ class CurrencyFormatter
 {
 private:
 	UErrorCode errorCode = U_ZERO_ERROR;
-	icu_64::NumberFormat *nf = 0;
+	ICUNS::NumberFormat *nf = 0;
+public:
 
-	void start()
+	CurrencyFormatter(int len, const char *protobuf)
 	{
-		const char *locale = this->builder.locale.c_str();
-		nf = icu_64::NumberFormat::createCurrencyInstance(locale, errorCode);
+		const std::string binaryProtobuf(protobuf, len);
+		wasmIntl::FormatterOptions builder;
+		builder.ParseFromString(binaryProtobuf);
+		const char *locale = builder.locale().c_str();
+		nf = ICUNS::NumberFormat::createCurrencyInstance(locale, errorCode);
 		if (U_FAILURE(errorCode))
 		{
 			printf("%s::createCurrencyInstance(%s) failed - %s\n",
-						 this->builder.style.c_str(), locale, u_errorName(errorCode));
+						 builder.style().c_str(), locale, u_errorName(errorCode));
 			return;
 		}
 
-		if (this->builder.currency.length() >= 3)
+		if (builder.has_currency() && builder.currency().length() >= 3)
 		{
 			UChar uCurrency[4];
-			u_charsToUChars(this->builder.currency.c_str(), uCurrency, 4);
+			u_charsToUChars(builder.currency().c_str(), uCurrency, 4);
 			nf->setCurrency(uCurrency, errorCode);
 			if (U_FAILURE(errorCode))
 			{
 				printf("setNumberFormatCurrency(%s) failed - %s\n",
-							 this->builder.currency.c_str(), u_errorName(errorCode));
+							 builder.currency().c_str(), u_errorName(errorCode));
 			}
 		}
-		nf->setGroupingUsed(this->builder.useGrouping);
-		if (this->builder.hasMinimumIntegerDigits) {
-			nf->setMinimumIntegerDigits(this->builder.minimumIntegerDigits);
+		if (builder.has_usegrouping()) {
+			nf->setGroupingUsed(builder.usegrouping());
 		}
-		if (this->builder.hasMinimumFractionDigits) {
-			nf->setMinimumFractionDigits(this->builder.minimumFractionDigits);
+		if (builder.has_minimumintegerdigits()) {
+			nf->setMinimumIntegerDigits(builder.minimumintegerdigits());
 		}
-		if (this->builder.hasMaximumFractionDigits) {
-			nf->setMaximumFractionDigits(this->builder.maximumFractionDigits);
+		if (builder.has_minimumfractiondigits()) {
+			nf->setMinimumFractionDigits(builder.minimumfractiondigits());
+		}
+		if (builder.has_maximumfractiondigits()) {
+			nf->setMaximumFractionDigits(builder.maximumfractiondigits());
 		}
 	}
 
 public:
-	FormatterOptionBuilder builder;
 
 	~CurrencyFormatter()
 	{
@@ -147,10 +151,7 @@ public:
 
 	std::string format(double value) const
 	{
-		if (!nf) {
-			this->start();
-		}
-		icu_64::UnicodeString output;
+		ICUNS::UnicodeString output;
 		nf->format(value, output);
 		//  uprintf(output);
 		std::string str;
