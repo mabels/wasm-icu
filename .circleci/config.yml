@@ -43,7 +43,8 @@ jobs:
           command: |
             if [ ! -d wasm-protobuf/dist ]
             then
-            #  source emsdk/emsdk_env.sh
+              apt update
+              apt install autoconf
               cd wasm-protobuf
               npm run build
               npm pack
