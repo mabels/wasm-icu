@@ -11,6 +11,7 @@ else
 endif
 
 PROTOC=$(PWD)/generated/protobuf/dist/bin/protoc
+LIBPROTOC=$(PWD)/generated/protobuf/dist/lib/libprotobuf-lite.a
 
 
 #ifeq (${EMSDK},)
@@ -23,9 +24,9 @@ TARGET_DIR = ./dist
 
 all: $(TARGET_DIR) generated $(PROTOC) $(TARGET_DIR)/WasmIntlBinding.js
 
-native-protoc: $(PROTOC)
+native-protoc: $(LIBPROTOC)
 
-$(PROTOC): native-protobuf.sh ../wasm-protobuf/branch.sh ../wasm-protobuf/prepare.sh
+$(LIBPROTOC): native-protobuf.sh ../wasm-protobuf/branch.sh ../wasm-protobuf/prepare.sh
 	sh -x native-protobuf.sh
 
 $(TARGET_DIR):
