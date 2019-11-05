@@ -10,7 +10,7 @@ jobs:
 
       - restore_cache:
           keys:
-            - v1-wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
+            - v2-wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
 
       - run:
           command: |
@@ -25,7 +25,7 @@ jobs:
       - save_cache:
           paths:
             - wasm-libicu/dist
-          key: v1-wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
+          key: v2-wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
 
 
   wasm-protobuf:
@@ -64,7 +64,7 @@ jobs:
 
       - restore_cache:
           keys:
-            - v1-wasm-intl-native-protobuf-{{ checksum "wasm-protobuf/branch.sh" }}
+            - v2-wasm-intl-native-protobuf-{{ checksum "wasm-protobuf/branch.sh" }}
 
       - run:
           command: |
@@ -78,8 +78,8 @@ jobs:
 
       - save_cache:
           paths:
-            - generated/protobuf/dist
-          key: v1-wasm-intl-native-protobuf-{{ checksum "wasm-protobuf/branch.sh" }}
+            - wasm-intl/generated/protobuf/dist
+          key: v2-wasm-intl-native-protobuf-{{ checksum "wasm-protobuf/branch.sh" }}
 
 
   wasm-intl:
