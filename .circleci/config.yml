@@ -55,6 +55,32 @@ jobs:
             - wasm-protobuf/dist
           key: v1-wasm-protobuf-{{ checksum "wasm-protobuf/branch.sh" }}
 
+  wasm-intl-native-protobuf:
+    docker: 
+      - image: trzeci/emscripten
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-wasm-intl-native-protobuf-{{ checksum "wasm-protobuf/branch.sh" }}
+
+      - run:
+          command: |
+            if [ ! -d wasm-intl/generated/protobuf/dist ]
+            then
+              apt update -y
+              apt install -y autoconf libtool
+              cd wasm-intl
+              make
+            fi
+
+      - save_cache:
+          paths:
+            - /generated/protobuf/dist
+          key: v1-wasm-intl-native-protobuf-{{ checksum "wasm-protobuf/branch.sh" }}
+
 
   wasm-intl:
     docker: 
@@ -86,8 +112,10 @@ workflows:
     jobs:
       - wasm-libicu
       - wasm-protobuf
+      - wasm-intl-native-protobuf
       - wasm-intl:
           requires:
+            - wasm-intl-native-protobuf
             - wasm-libicu
             - wasm-protobuf
 
