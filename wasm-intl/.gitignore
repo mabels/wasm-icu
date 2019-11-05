@@ -1,4 +1,5 @@
 node_modules/**
+generated/**
 dist/**
 yarn-error.log
 package-lock.json
