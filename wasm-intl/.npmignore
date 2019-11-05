@@ -1,4 +1,5 @@
 node_modules/**
 **/*.tgz
+generated/protobuf/**
 yarn-error.log
 package-lock.json

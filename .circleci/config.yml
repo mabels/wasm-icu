@@ -91,15 +91,18 @@ jobs:
 
       - restore_cache:
           keys:
-            - v1-wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
+            - v2-wasm-libicu-{{ checksum "wasm-libicu/branch.sh" }}
 
       - restore_cache:
           keys:
             - v1-wasm-protobuf-{{ checksum "wasm-protobuf/branch.sh" }}
 
+      - restore_cache:
+          keys:
+            - v2-wasm-intl-native-protobuf-{{ checksum "wasm-protobuf/branch.sh" }}
+
       - run:
           command: |
-            # source emsdk/emsdk_env.sh
             cd wasm-intl
             npm install
             npm run build
