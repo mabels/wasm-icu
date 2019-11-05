@@ -23,6 +23,8 @@ TARGET_DIR = ./dist
 
 all: $(TARGET_DIR) generated $(PROTOC) $(TARGET_DIR)/WasmIntlBinding.js
 
+native-protoc: $(PROTOC)
+
 $(PROTOC): native-protobuf.sh ../wasm-protobuf/branch.sh ../wasm-protobuf/prepare.sh
 	sh -x native-protobuf.sh
 

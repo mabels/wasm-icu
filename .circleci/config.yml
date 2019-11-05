@@ -73,12 +73,12 @@ jobs:
               apt update -y
               apt install -y autoconf libtool
               cd wasm-intl
-              make
+              bash -x native-protobuf.sh
             fi
 
       - save_cache:
           paths:
-            - /generated/protobuf/dist
+            - generated/protobuf/dist
           key: v1-wasm-intl-native-protobuf-{{ checksum "wasm-protobuf/branch.sh" }}
 
 
