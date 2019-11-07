@@ -45,6 +45,7 @@ $(TARGET_DIR)/WasmIntlBinding.js: binding/main.cpp \
 	emcc -O3 --bind -std=c++11 \
 	  -DICUNS=icu_65 \
 		-s MODULARIZE=1 -s 'EXPORT_NAME="WasmIntlBinding"' \
+		-s NODEJS_CATCH_REJECTION=0 \
 		-s TOTAL_MEMORY=40MB -s WASM=1 \
 		-I ./generated \
 		-I $(ICU_BASE)/include \

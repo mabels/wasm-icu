@@ -1,6 +1,6 @@
 {
   "name": "wasm-intl",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "WASM ICU Intl JS Binding",
   "main": "dist/WasmIntl.js",
   "scripts": {
