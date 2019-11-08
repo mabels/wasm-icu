@@ -6,6 +6,14 @@ function currencyProps(c?: string): NumberFormatProps {
   return { style: "currency", currency: c };
 }
 
+test("is wasmintl binding registered", async () => {
+  const my = jest.fn();
+  process.on('unhandledRejection', my);
+  process.emit('unhandledRejection' as any, 'Hello', 'World');
+  process.removeListener('unhandledRejection', my);
+  expect(my.mock.calls[0]).toEqual(['Hello', 'World']);
+});
+
 test("optional currency", async () => {
   expect(
     (await WasmIntl()).NumberFormat("de-DE", currencyProps()).format(4711.22)

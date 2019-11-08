@@ -13,12 +13,15 @@ endif
 PROTOC=$(PWD)/generated/protobuf/dist/bin/protoc
 LIBPROTOC=$(PWD)/generated/protobuf/dist/lib/libprotobuf-lite.a
 
-
 #ifeq (${EMSDK},)
 #	DOCKER_EMSDK=docker run --rm -v `pwd`:/src trzeci/emscripten
 #else
 DOCKER_EMSDK=
 #endif
+
+EMCCOPTS= -s MODULARIZE=1 -s 'EXPORT_NAME="WasmIntlBinding"' \
+		      -s TOTAL_MEMORY=40MB -s WASM=1 \
+					-s NODEJS_CATCH_REJECTION=0
 
 TARGET_DIR = ./dist
 
@@ -44,9 +47,7 @@ $(TARGET_DIR)/WasmIntlBinding.js: binding/main.cpp \
 	$(DOCKER_EMSDK) \
 	emcc -O3 --bind -std=c++11 \
 	  -DICUNS=icu_65 \
-		-s MODULARIZE=1 -s 'EXPORT_NAME="WasmIntlBinding"' \
-		-s NODEJS_CATCH_REJECTION=0 \
-		-s TOTAL_MEMORY=40MB -s WASM=1 \
+		$(EMCCOPTS) \
 		-I ./generated \
 		-I $(ICU_BASE)/include \
 		-I $(PROTOBUF_BASE)/include \
