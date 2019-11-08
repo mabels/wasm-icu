@@ -1,7 +1,7 @@
 syntax = "proto2";
 
-option cc_enable_arenas = false;
 option optimize_for = LITE_RUNTIME;
+option cc_enable_arenas = false;
 
 package wasmIntl;
 
