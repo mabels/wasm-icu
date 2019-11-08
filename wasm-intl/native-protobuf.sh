@@ -21,7 +21,7 @@ cd protobuf
 PREFIX=$PWD/dist
 mkdir -p $PREFIX
 sh autogen.sh
-./configure --prefix=$PREFIX 
+DIST_LANG=cpp ./configure --prefix=$PREFIX 
 make clean
 make -j$(max8nproc)
 make -j$(max8nproc) install

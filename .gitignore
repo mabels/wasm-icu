@@ -4,6 +4,7 @@ node_modules/**
 **/icu/**
 **/protobuf/**
 **/dist/**
+**/*.tgz
 
 # Compiled Object files
 *.slo

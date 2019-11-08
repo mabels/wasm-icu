@@ -41,9 +41,8 @@ generated:
 generated/formatter-options.pb.h: binding/formatter-options.proto
 	cd binding && $(PROTOC) -I=./ --cpp_out=../generated formatter-options.proto
 
-$(TARGET_DIR)/WasmIntlBinding.js: binding/main.cpp \
-	binding/currency-formatter.h \
-	binding/str2int.h generated/formatter-options.pb.o
+$(TARGET_DIR)/WasmIntlBinding.js: dist/main.o \
+	dist/formatter-options.pb.o
 	$(DOCKER_EMSDK) \
 	emcc -O3 --bind -std=c++11 \
 	  -DICUNS=icu_65 \
@@ -51,24 +50,35 @@ $(TARGET_DIR)/WasmIntlBinding.js: binding/main.cpp \
 		-I ./generated \
 		-I $(ICU_BASE)/include \
 		-I $(PROTOBUF_BASE)/include \
-		generated/formatter-options.pb.o \
-		binding/main.cpp \
+		dist/formatter-options.pb.o \
+		dist/main.o \
 		-o $@ \
 		-L $(ICU_BASE)/lib -licui18n -licuio -licutu -licuuc -licudata \
-		-L $(PROTOBUF_BASE)/lib -lprotobuf-lite \
 		-s EXPORTED_FUNCTIONS='["_main", "_icuVersion"]' \
-		-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
+		-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
+		-L $(PROTOBUF_BASE)/lib -lprotobuf-lite 
 
-generated/formatter-options.pb.o: generated/formatter-options.pb.h \
+dist/formatter-options.pb.o: generated/formatter-options.pb.h \
 	generated/formatter-options.pb.cc
 	$(DOCKER_EMSDK) \
-	emcc -O3 --bind -std=c++11 \
-		-s WASM=1 \
-		-I $(ICU_BASE)/include \
+	emcc -O3 -std=c++11 \
 		-I $(PROTOBUF_BASE)/include \
-		-c -o generated/formatter-options.pb.o \
+		-c -o dist/formatter-options.pb.o \
 		generated/formatter-options.pb.cc
 
+dist/main.o: binding/main.cpp \
+	binding/str2int.h \
+	binding/currency-formatter.h \
+	dist/formatter-options.pb.o
+	$(DOCKER_EMSDK) \
+	emcc -O3 -std=c++11 \
+	  	-DICUNS=icu_65 \
+		-s WASM=1 \
+		-I ./generated \
+		-I $(ICU_BASE)/include \
+		-I $(PROTOBUF_BASE)/include \
+		-c -o dist/main.o \
+		binding/main.cpp
 
 clean:
 		rm -rf $(TARGET_DIR) generated

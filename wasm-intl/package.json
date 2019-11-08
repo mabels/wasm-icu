@@ -6,7 +6,8 @@
   "scripts": {
     "clean": "rm -rf ./dist ./generated ./node_modules",
     "protobufjs": "mkdir -p generated && cd binding && ../generated/protobuf/dist/bin/protoc --plugin=protoc-gen-ts=../node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:../generated --ts_out=../generated formatter-options.proto",
-    "build": "make && npm run protobufjs && tsc",
+    "native-protoc": "make native-protoc",
+    "build": "make native-protoc && make && npm run protobufjs && tsc",
     "test": "jest"
   },
   "repository": {

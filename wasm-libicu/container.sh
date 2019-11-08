@@ -2,7 +2,7 @@
 
 sh -x prepare.sh $BRANCH
 
-buildCmd="cd icu/icu4c/source && bash -x ../../../build.sh"
+buildCmd="TOPLEVEL=`pwd` ; cd icu/icu4c/source && bash -x ../../../build.sh \$TOPLEVEL"
 
 if `which emcc`
 then

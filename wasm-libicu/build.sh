@@ -4,6 +4,8 @@
 #emconfigure ./configure --enable-static --prefix=/src/dist
 #sed -i.orig 's/^EXEEXT =/EXEEXT = .js/' icudefs.mk
 
+TOPLEVEL=$1
+
 max8nproc()
 {
   a=$(nproc)
@@ -21,10 +23,15 @@ if [ -d /src ]
 then 
   PREFIX=/src/dist
 else
-  PREFIX=$PWD/../dist
+  if [ -n "$TOPLEVEL" ]
+  then
+    PREFIX=$TOPLEVEL/dist
+  else
+    PREFIX=$PWD/../dist
+  fi
 fi
 mkdir -p $PREFIX
 ./runConfigureICU wasm32 --prefix=$PREFIX
 make clean
-make -j$(max8nproc)
+make -j$(max8nproc) VERBOSE=1
 make -j$(max8nproc) install

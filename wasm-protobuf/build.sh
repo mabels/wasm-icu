@@ -22,7 +22,7 @@ else
 fi
 mkdir -p $PREFIX
 sh autogen.sh
-emconfigure ./configure --prefix=$PWD/../dist --disable-shared --enable-static # --build=wasm32 --target=wasm32
+DIST_LANG=cpp emconfigure ./configure --prefix=$PWD/../dist --disable-shared --enable-static --build=wasm32 --target=wasm32
 emmake make clean
 emmake make -j$(max8nproc) EXEEXT=.js PROTOBUF_OPT_FLAG="-O3" V=1 # PTHREAD_CFLAGS="" PTHREAD_DEF="" V=1
 emmake make -j$(max8nproc) install PROTOBUF_OPT_FLAG="-O3"  V=1 # PTHREAD_CFLAGS="" PTHREAD_DEF="" V=1
